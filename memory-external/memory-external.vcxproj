@@ -166,7 +166,7 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>gdiplus.lib;wininet.lib;Gdi32.lib;User32.lib</AdditionalDependencies>
+      <AdditionalDependencies>d3d11.lib;dxgi.lib;dwmapi.lib;gdiplus.lib;wininet.lib;Gdi32.lib;User32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -181,13 +181,14 @@
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\src\external\imgui;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>false</GenerateDebugInformation>
-      <AdditionalDependencies>gdiplus.lib;wininet.lib;Gdi32.lib;User32.lib</AdditionalDependencies>
+      <AdditionalDependencies>d3d11.lib;dxgi.lib;dwmapi.lib;gdiplus.lib;wininet.lib;Gdi32.lib;User32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Unknowncheats|x64'">
@@ -202,16 +203,23 @@
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\src\external\imgui;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>false</GenerateDebugInformation>
-      <AdditionalDependencies>gdiplus.lib;wininet.lib;Gdi32.lib;User32.lib</AdditionalDependencies>
+      <AdditionalDependencies>d3d11.lib;dxgi.lib;dwmapi.lib;gdiplus.lib;wininet.lib;Gdi32.lib;User32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\src\external\imgui\imgui.cpp" />
+    <ClCompile Include="..\src\external\imgui\imgui_draw.cpp" />
+    <ClCompile Include="..\src\external\imgui\imgui_impl_dx11.cpp" />
+    <ClCompile Include="..\src\external\imgui\imgui_impl_win32.cpp" />
+    <ClCompile Include="..\src\external\imgui\imgui_tables.cpp" />
+    <ClCompile Include="..\src\external\imgui\imgui_widgets.cpp" />
     <ClCompile Include="classes\auto_updater.cpp" />
     <ClCompile Include="classes\config.cpp" />
     <ClCompile Include="classes\utils.cpp" />
@@ -220,11 +228,20 @@
     <ClCompile Include="hacks\reader.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\src\external\imgui\imconfig.h" />
+    <ClInclude Include="..\src\external\imgui\imgui.h" />
+    <ClInclude Include="..\src\external\imgui\imgui_impl_dx11.h" />
+    <ClInclude Include="..\src\external\imgui\imgui_impl_win32.h" />
+    <ClInclude Include="..\src\external\imgui\imgui_internal.h" />
+    <ClInclude Include="..\src\external\imgui\imstb_rectpack.h" />
+    <ClInclude Include="..\src\external\imgui\imstb_textedit.h" />
+    <ClInclude Include="..\src\external\imgui\imstb_truetype.h" />
     <ClInclude Include="classes\auto_updater.hpp" />
     <ClInclude Include="classes\config.hpp" />
     <ClInclude Include="classes\globals.hpp" />
     <ClInclude Include="classes\json.hpp" />
     <ClInclude Include="classes\render.hpp" />
+    <ClInclude Include="classes\render_dx11.hpp" />
     <ClInclude Include="classes\utils.h" />
     <ClInclude Include="classes\vector.hpp" />
     <ClInclude Include="hacks\hack.hpp" />
