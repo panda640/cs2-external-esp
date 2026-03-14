@@ -50,6 +50,9 @@
     <ClInclude Include="classes\render.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="classes\render_dx11.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="classes\json.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>

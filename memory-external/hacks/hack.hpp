@@ -1,7 +1,7 @@
 #include <thread>
 #include <cmath>
 #include "reader.hpp"
-#include "../classes/render.hpp"
+#include "../classes/render_dx11.hpp"
 #include "../classes/config.hpp"
 #include "../classes/globals.hpp"
 
@@ -24,7 +24,7 @@ namespace hack {
 						{"leg_lower_R", "ankle_R"}
 	};
 
-	void loop() {
+	void loop(ImDrawList* drawList) {
 
 		std::lock_guard<std::mutex> lock(reader_mutex);
 
@@ -41,21 +41,21 @@ namespace hack {
 				float width = height * 1.4f;
 
 				render::DrawFilledBox(
-					g::hdcBuffer,
+					drawList,
 					c4ScreenPos.x - (width / 2),
 					c4ScreenPos.y - (height / 2),
 					width,
 					height,
-					config::esp_box_color_enemy
+					ImColor(config::esp_box_color_enemy.r, config::esp_box_color_enemy.g, config::esp_box_color_enemy.b)
 				);
 
 				render::RenderText(
-					g::hdcBuffer,
+					drawList,
 					c4ScreenPos.x + (width / 2 + 5),
 					c4ScreenPos.y,
 					"C4",
-					config::esp_name_color,
-					10
+					ImColor(config::esp_name_color.r, config::esp_name_color.g, config::esp_name_color.b),
+					12.0f
 				);
 			}
 		}
@@ -86,11 +86,11 @@ namespace hack {
 
 			if (config::show_head_tracker) {
 				render::DrawCircle(
-					g::hdcBuffer,
+					drawList,
 					player->bones.bonePositions["head"].x,
 					player->bones.bonePositions["head"].y - width / 12,
 					width / 5,
-					(g_game.localTeam == player->team ? config::esp_skeleton_color_team : config::esp_skeleton_color_enemy)
+					(g_game.localTeam == player->team ? ImColor(config::esp_skeleton_color_team.r, config::esp_skeleton_color_team.g, config::esp_skeleton_color_team.b) : ImColor(config::esp_skeleton_color_enemy.r, config::esp_skeleton_color_enemy.g, config::esp_skeleton_color_enemy.b))
 				);
 			}
 
@@ -100,10 +100,10 @@ namespace hack {
 					const std::string& boneTo = connection.second;
 
 					render::DrawLine(
-						g::hdcBuffer,
+						drawList,
 						player->bones.bonePositions[boneFrom].x, player->bones.bonePositions[boneFrom].y,
 						player->bones.bonePositions[boneTo].x, player->bones.bonePositions[boneTo].y,
-						g_game.localTeam == player->team ? config::esp_skeleton_color_team : config::esp_skeleton_color_enemy
+						g_game.localTeam == player->team ? ImColor(config::esp_skeleton_color_team.r, config::esp_skeleton_color_team.g, config::esp_skeleton_color_team.b) : ImColor(config::esp_skeleton_color_enemy.r, config::esp_skeleton_color_enemy.g, config::esp_skeleton_color_enemy.b)
 					);
 				}
 			}
@@ -111,31 +111,31 @@ namespace hack {
 			if (config::show_box_esp)
 			{
 				render::DrawBorderBox(
-					g::hdcBuffer,
+					drawList,
 					screenHead.x - width / 2,
 					screenHead.y,
 					width,
 					height,
-					(g_game.localTeam == player->team ? config::esp_box_color_team : config::esp_box_color_enemy)
+					(g_game.localTeam == player->team ? ImColor(config::esp_box_color_team.r, config::esp_box_color_team.g, config::esp_box_color_team.b) : ImColor(config::esp_box_color_enemy.r, config::esp_box_color_enemy.g, config::esp_box_color_enemy.b))
 				);
 			}
 
 			render::DrawBorderBox(
-				g::hdcBuffer,
+				drawList,
 				screenHead.x - (width / 2 + 10),
 				screenHead.y + (height * (100 - player->armor) / 100),
 				2,
 				height - (height * (100 - player->armor) / 100),
-				RGB(0, 185, 255)
+				ImColor(0, 185, 255)
 			);
 
 			render::DrawBorderBox(
-				g::hdcBuffer,
+				drawList,
 				screenHead.x - (width / 2 + 5),
 				screenHead.y + (height * (100 - player->health) / 100),
 				2,
 				height - (height * (100 - player->health) / 100),
-				RGB(
+				ImColor(
 					(255 - player->health),
 					(55 + player->health * 2),
 					75
@@ -143,12 +143,12 @@ namespace hack {
 			);
 
 			render::RenderText(
-				g::hdcBuffer,
+				drawList,
 				screenHead.x + (width / 2 + 5),
 				screenHead.y,
 				player->name.c_str(),
-				config::esp_name_color,
-				10
+				ImColor(config::esp_name_color.r, config::esp_name_color.g, config::esp_name_color.b),
+				12.0f
 			);
 
 			/**
@@ -158,69 +158,69 @@ namespace hack {
 				continue;
 
 			render::RenderText(
-				g::hdcBuffer,
+				drawList,
 				screenHead.x + (width / 2 + 5),
-				screenHead.y + 10,
+				screenHead.y + 12,
 				(std::to_string(player->health) + "hp").c_str(),
-				RGB(
+				ImColor(
 					(255 - player->health),
 					(55 + player->health * 2),
 					75
 				),
-				10
+				12.0f
 			);
 
 			render::RenderText(
-				g::hdcBuffer,
+				drawList,
 				screenHead.x + (width / 2 + 5),
-				screenHead.y + 20,
+				screenHead.y + 24,
 				(std::to_string(player->armor) + "armor").c_str(),
-				RGB(
+				ImColor(
 					(255 - player->armor),
 					(55 + player->armor * 2),
 					75
 				),
-				10
+				12.0f
 			);
 
 			if (config::show_extra_flags)
 			{
 				render::RenderText(
-					g::hdcBuffer,
+					drawList,
 					screenHead.x + (width / 2 + 5),
-					screenHead.y + 30,
+					screenHead.y + 36,
 					player->weapon.c_str(),
-					config::esp_distance_color,
-					10
+					ImColor(config::esp_distance_color.r, config::esp_distance_color.g, config::esp_distance_color.b),
+					12.0f
 				);
 
 				render::RenderText(
-					g::hdcBuffer,
+					drawList,
 					screenHead.x + (width / 2 + 5),
-					screenHead.y + 40,
+					screenHead.y + 48,
 					(std::to_string(roundedDistance) + "m away").c_str(),
-					config::esp_distance_color,
-					10
+					ImColor(config::esp_distance_color.r, config::esp_distance_color.g, config::esp_distance_color.b),
+					12.0f
 				);
 
 				render::RenderText(
-					g::hdcBuffer,
+					drawList,
 					screenHead.x + (width / 2 + 5),
-					screenHead.y + 50,
+					screenHead.y + 60,
 					("$" + std::to_string(player->money)).c_str(),
-					RGB(0, 125, 0),
-					10
+					ImColor(0, 125, 0),
+					12.0f
 				);
 
 				if (player->flashAlpha > 100)
 				{
 					render::RenderText(
-						g::hdcBuffer,
+						drawList,
 						screenHead.x + (width / 2 + 5),
-						screenHead.y + 60,
+						screenHead.y + 72,
 						"Player is flashed",
-						config::esp_distance_color,
-						10
+						ImColor(config::esp_distance_color.r, config::esp_distance_color.g, config::esp_distance_color.b),
+						12.0f
 					);
 				}
 
@@ -228,12 +228,12 @@ namespace hack {
 				{
 					const std::string defuText = "Player is defusing";
 					render::RenderText(
-						g::hdcBuffer,
+						drawList,
 						screenHead.x + (width / 2 + 5),
-						screenHead.y + 60,
+						screenHead.y + 72,
 						defuText.c_str(),
-						config::esp_distance_color,
-						10
+						ImColor(config::esp_distance_color.r, config::esp_distance_color.g, config::esp_distance_color.b),
+						12.0f
 					);
 				}
 			}
